@@ -1,0 +1,18 @@
+# GHC compiled interface and object files
+*.hi
+*.o
+
+# GHC generated executable
+*.exe
+*.out
+*.bin
+
+# Temporary files
+*~
+*.swp
+*.swo
+.DS_Store
+
+# Vim/Emacs temporary files
+*.sublime-workspace
+*.sublime-project

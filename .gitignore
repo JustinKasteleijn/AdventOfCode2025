@@ -16,3 +16,6 @@
 # Vim/Emacs temporary files
 *.sublime-workspace
 *.sublime-project
+
+# Inputs
+.txt

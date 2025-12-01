@@ -84,7 +84,7 @@ main = do
   print $ testPart1 3
   print $ testPart2 6
 
-  input <- readFile "day1Input.txt"
+  input <- readFile "day1.txt"
   print $ solve1 input
   print $ solve2 input
 

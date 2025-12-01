@@ -1,5 +1,6 @@
 import Control.Applicative (Alternative (..))
 import Parser
+import Utilities (testPart)
 
 -- Types and instances
 
@@ -91,18 +92,10 @@ main = do
 -- Testing
 
 testPart1 :: Int -> String
-testPart1 expected =
-  let actual = solve1 testInput
-   in if actual == expected
-        then "Part 1 succeeded"
-        else "Expected: '" ++ show expected ++ "' got '" ++ show actual ++ "'"
+testPart1 expected = testPart 1 testInput solve1 3
 
 testPart2 :: Int -> String
-testPart2 expected =
-  let actual = solve2 testInput
-   in if actual == expected
-        then "Part 2 succeeded"
-        else "Expected: '" ++ show expected ++ "' got '" ++ show actual ++ "'"
+testPart2 expected = testPart 2 testInput solve2 6
 
 testInput :: String
 testInput =

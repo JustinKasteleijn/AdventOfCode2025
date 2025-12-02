@@ -92,10 +92,10 @@ main = do
 -- Testing
 
 testPart1 :: Int -> String
-testPart1 expected = testPart 1 testInput solve1 3
+testPart1 = testPart 1 testInput solve1
 
 testPart2 :: Int -> String
-testPart2 expected = testPart 2 testInput solve2 6
+testPart2 = testPart 2 testInput solve2
 
 testInput :: String
 testInput =

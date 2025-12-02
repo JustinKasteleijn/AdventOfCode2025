@@ -153,6 +153,13 @@ try p = Parser $ \input ->
 choice :: [Parser a] -> Parser a
 choice = foldr (<|>) empty
 
+splitOn :: Char -> Parser a -> Parser (a, a)
+splitOn c px = do
+  xs <- sepBy px (char c)
+  case xs of
+    [a, b] -> return (a, b)
+    _ -> fail $ "Expected exactly two elements seperated by the delimiter:" ++ [c]
+
 -- Utilities
 
 unwrapParser :: Parser a -> String -> a

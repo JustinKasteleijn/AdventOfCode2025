@@ -44,15 +44,13 @@ verifyRange2 r = sum $ filter isSymmetric [from r .. to r]
         hasRepeatingBlock :: Int -> Bool
         hasRepeatingBlock k
           | numDigits `mod` k /= 0 = False
-          | otherwise = allEqual (chunks k s)
+          | otherwise =
+              let chunks' = chunks k s
+               in all (== head chunks') chunks'
 
         chunks :: Int -> String -> [String]
         chunks k "" = []
         chunks k str = take k str : chunks k (drop k str)
-
-        allEqual :: (Eq a) => [a] -> Bool
-        allEqual [] = True
-        allEqual (x : xs) = all (== x) xs
 
 verifyRanges2 :: [Range] -> Int
 verifyRanges2 xs = sum $ map verifyRange2 xs
@@ -74,8 +72,10 @@ main = do
   print $ testPart2 4174379265
 
   input <- readFile "day2.txt"
-  print $ solve1 input
-  print $ solve2 input
+  print "Results commented out becausde they take a second to run which is annoying when refactoring the code :)"
+
+-- print $ solve1 input
+-- print $ solve2 input
 
 -- Testing
 

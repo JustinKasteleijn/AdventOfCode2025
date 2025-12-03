@@ -160,6 +160,11 @@ splitOn c px = do
     [a, b] -> return (a, b)
     _ -> fail $ "Expected exactly two elements seperated by the delimiter:" ++ [c]
 
+digitsAsList :: Parser [Int]
+digitsAsList =
+  map (\c -> fromEnum c - fromEnum '0')
+    <$> digits1
+
 -- Utilities
 
 unwrapParser :: Parser a -> String -> a

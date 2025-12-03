@@ -48,9 +48,18 @@ main = do
   print $ testPart1 357
   print $ testPart2 3121910778619
 
+  print $ show $ runSingleTest 3 2
+
   input <- readFile "day3.txt"
   print $ solve1 input
   print $ solve2 input
+
+runSingleTest :: Int -> Int -> Maybe Int
+runSingleTest i bat
+  | i >= length testInput = Nothing
+  | otherwise =
+      let p = unwrapParser parseBank (lines testInput !! i)
+       in Just $ turnOnBatteries bat p
 
 testPart1 :: Int -> String
 testPart1 = testPart 1 testInput solve1

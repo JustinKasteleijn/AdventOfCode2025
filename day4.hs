@@ -1,0 +1,85 @@
+import Data.List (foldl')
+import Data.Set qualified as S
+import Parser
+import Utilities
+
+-- Data
+
+type Position = (Int, Int)
+
+type Graph = S.Set Position
+
+-- Parsing
+
+parseInput :: String -> Graph
+parseInput input =
+  S.fromList
+    [ (x, y)
+      | (y, line) <- zip [0 ..] (lines input),
+        (x, c) <- zip [0 ..] line,
+        c == '@'
+    ]
+
+adjacentOffsets :: Position -> [Position]
+adjacentOffsets (x, y) =
+  [ (x + dx, y + dy)
+    | dx <- [-1, 0, 1],
+      dy <- [-1, 0, 1],
+      (dx, dy) /= (0, 0)
+  ]
+
+solve :: (Position -> Graph -> Graph) -> Graph -> Int -> (Int, Graph)
+solve update graph n =
+  S.foldl'
+    step
+    (0, graph)
+    graph
+  where
+    step :: (Int, Graph) -> Position -> (Int, Graph)
+    step (acc', graph') pos'
+      | countNeighbors (adjacentOffsets pos') 0 < n =
+          let new = update pos' graph'
+           in (acc' + 1, new)
+      | otherwise = (acc', graph')
+
+    countNeighbors :: [Position] -> Int -> Int
+    countNeighbors [] count = count
+    countNeighbors (p : ps) count
+      | count >= n = count
+      | S.member p graph = countNeighbors ps (count + 1)
+      | otherwise = countNeighbors ps count
+
+solve1 :: Graph -> Int -> Int
+solve1 graph n = fst $ solve (\_ g -> g) graph n
+
+solve2 :: Graph -> Int -> Int
+solve2 graph n =
+  let (res, graph') = solve S.delete graph n
+   in if res > 0
+        then res + solve2 graph' n
+        else res
+
+main :: IO ()
+main = do
+  print $ parseInput testInput
+  print $ solve1 (parseInput testInput) 4
+  print $ solve2 (parseInput testInput) 4
+
+  input <- readFile "day4.txt"
+  print $ solve1 (parseInput input) 4
+  print $ solve2 (parseInput input) 4
+
+-- Testing
+
+testInput :: String
+testInput =
+  "..@@.@@@@.\n\
+  \@@@.@.@.@@\n\
+  \@@@@@.@.@@\n\
+  \@.@@@@..@.\n\
+  \@@.@@@@.@@\n\
+  \.@@@@@@@.@\n\
+  \.@.@.@.@@@\n\
+  \@.@@@.@@@@\n\
+  \.@@@@@@@@.\n\
+  \@.@.@@@.@.\n"

@@ -160,6 +160,13 @@ splitOn c px = do
     [a, b] -> return (a, b)
     _ -> fail $ "Expected exactly two elements seperated by the delimiter:" ++ [c]
 
+splitOn' :: String -> Parser a -> Parser b -> Parser (a, b)
+splitOn' str px py = do
+  x <- px
+  _ <- string str
+  y <- py
+  return (x, y)
+
 digitsAsList :: Parser [Int]
 digitsAsList =
   map (\c -> fromEnum c - fromEnum '0')

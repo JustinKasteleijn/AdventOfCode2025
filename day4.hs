@@ -20,8 +20,8 @@ parseInput input =
         c == '@'
     ]
 
-adjacentOffsets :: Position -> [Position]
-adjacentOffsets (x, y) =
+mooreNeighborhood :: Position -> [Position]
+mooreNeighborhood (x, y) =
   [ (x + dx, y + dy)
     | dx <- [-1, 0, 1],
       dy <- [-1, 0, 1],
@@ -37,17 +37,17 @@ solve update graph n =
   where
     step :: (Int, Graph) -> Position -> (Int, Graph)
     step (acc', graph') pos'
-      | countNeighbors (adjacentOffsets pos') 0 < n =
+      | countNeighbors (mooreNeighborhood pos') 0 < n =
           let new = update pos' graph'
            in (acc' + 1, new)
       | otherwise = (acc', graph')
 
     countNeighbors :: [Position] -> Int -> Int
-    countNeighbors [] count = count
-    countNeighbors (p : ps) count
-      | count >= n = count
-      | S.member p graph = countNeighbors ps (count + 1)
-      | otherwise = countNeighbors ps count
+    countNeighbors [] acc = acc
+    countNeighbors (p : ps) acc
+      | acc >= n = acc
+      | S.member p graph = countNeighbors ps (acc + 1)
+      | otherwise = countNeighbors ps acc
 
 solve1 :: Graph -> Int -> Int
 solve1 graph n = fst $ solve (\_ g -> g) graph n
@@ -61,13 +61,14 @@ solve2 graph n =
 
 main :: IO ()
 main = do
-  print $ parseInput testInput
+  -- print $ parseInput testInput
   print $ solve1 (parseInput testInput) 4
   print $ solve2 (parseInput testInput) 4
 
   input <- readFile "day4.txt"
-  print $ solve1 (parseInput input) 4
-  print $ solve2 (parseInput input) 4
+  let parsed = parseInput input
+  print $ solve1 parsed 4
+  print $ solve2 parsed 4
 
 -- Testing
 

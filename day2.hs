@@ -48,10 +48,6 @@ verifyRange2 r = sum $ filter isSymmetric [from r .. to r]
               let chunks' = chunks k s
                in all (== head chunks') chunks'
 
-        chunks :: Int -> String -> [String]
-        chunks k "" = []
-        chunks k str = take k str : chunks k (drop k str)
-
 verifyRanges2 :: [Range] -> Int
 verifyRanges2 xs = sum $ map verifyRange2 xs
 

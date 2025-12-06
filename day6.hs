@@ -72,7 +72,6 @@ main = do
   input <- readFile "day6.txt"
   let (numbers', operators') = unwrapParser parse' input
   let (_, numbers'') = parseInputPartTwo input
-  print $ solve1 numbers' operators'
   print $ solve2 (map (reverse . map toInt) numbers'') operators'
 
   return ()

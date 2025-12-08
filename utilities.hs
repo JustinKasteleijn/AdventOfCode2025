@@ -1,6 +1,6 @@
 module Utilities where
 
-import Data.List (tails)
+import Data.List (foldl', tails)
 
 testPart :: forall a. (Show a, Eq a) => Int -> String -> (String -> a) -> a -> String
 testPart part input f expected =
@@ -24,3 +24,6 @@ split c arr = splitOnHelper c arr [] []
       | c == x && null acc = splitOnHelper c xs [] ret
       | c == x = splitOnHelper c xs [] (reverse acc : ret)
       | otherwise = splitOnHelper c xs (x : acc) ret
+
+sum' :: (Num a) => [a] -> a
+sum' = foldl' (+) 0

@@ -1,3 +1,4 @@
+import Benchmark
 import Parser
 import Utilities
 
@@ -21,10 +22,10 @@ parseRanges :: Parser [Range]
 parseRanges = sepBy1 parseRange (char ',')
 
 verifyRanges :: [Range] -> Int
-verifyRanges xs = sum $ map verifyRange xs
+verifyRanges xs = sum' $ map verifyRange xs
 
 verifyRange :: Range -> Int
-verifyRange r = sum $ filter symmetry [from r .. to r]
+verifyRange r = sum' $ filter symmetry [from r .. to r]
   where
     symmetry :: (Show a) => a -> Bool
     symmetry n =
@@ -33,7 +34,7 @@ verifyRange r = sum $ filter symmetry [from r .. to r]
        in even len && take (len `div` 2) s == drop (len `div` 2) s
 
 verifyRange2 :: Range -> Int
-verifyRange2 r = sum $ filter isSymmetric [from r .. to r]
+verifyRange2 r = sum' $ filter isSymmetric [from r .. to r]
   where
     isSymmetric :: Int -> Bool
     isSymmetric n = any hasRepeatingBlock [1 .. numDigits `div` 2]
@@ -49,7 +50,7 @@ verifyRange2 r = sum $ filter isSymmetric [from r .. to r]
                in all (== head chunks') chunks'
 
 verifyRanges2 :: [Range] -> Int
-verifyRanges2 xs = sum $ map verifyRange2 xs
+verifyRanges2 xs = sum' $ map verifyRange2 xs
 
 solve1 :: String -> Int
 solve1 s =
@@ -68,10 +69,12 @@ main = do
   print $ testPart2 4174379265
 
   input <- readFile "day2.txt"
-  print "Results commented out becausde they take a second to run which is annoying when refactoring the code :)"
+  -- print "Results commented out becausde they take a second to run which is annoying when refactoring the code :)"
 
--- print $ solve1 input
--- print $ solve2 input
+  result1 <- timeIt "Day 1 Part 1:" $ solve1 input
+  result2 <- timeIt "Day 2 Part 2:" $ solve2 input
+  print $ result1
+  print $ result2
 
 -- Testing
 

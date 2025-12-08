@@ -1,3 +1,4 @@
+import Benchmark
 import Data.List (foldl')
 import Debug.Trace
 import Parser
@@ -51,8 +52,10 @@ main = do
   print $ show $ runSingleTest 3 2
 
   input <- readFile "day3.txt"
-  print $ solve1 input
-  print $ solve2 input
+  result1 <- timeIt "Day 1 Part 1:" $ solve1 input
+  print result1
+  result2 <- timeIt "Day 1 Part 2:" $ solve2 input
+  print result2
 
 runSingleTest :: Int -> Int -> Maybe Int
 runSingleTest i bat

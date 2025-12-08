@@ -1,3 +1,4 @@
+import Benchmark
 import Data.List (foldl')
 import Data.Set qualified as S
 import Parser
@@ -69,9 +70,11 @@ main = do
   print $ solve2 (parseInput testInput) 4
 
   input <- readFile "day4.txt"
-  let parsed = parseInput input
-  print $ solve1 parsed 4
-  print $ solve2 parsed 4
+  parsed <- timeIt "Parsing: " (parseInput input)
+  result1 <- timeIt "Day 4 Part 1" (solve1 parsed 4)
+  result2 <- timeIt "Day 4 Part 2" (solve2 parsed 4)
+  print result1
+  print result2
 
 -- Testing
 

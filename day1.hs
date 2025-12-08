@@ -33,6 +33,10 @@ rotate :: Rotation -> Dial -> Dial
 rotate (L n) dial = dial - fromIntegral n
 rotate (R n) dial = dial + fromIntegral n
 
+delta :: Rotation -> Int
+delta (R n) = n
+delta (L n) = -n
+
 -- Parsers
 
 parseRotation :: Parser Rotation
@@ -55,35 +59,30 @@ data FoldState = FS
 solve1 :: String -> Int
 solve1 =
   acc
-    . foldl
-      ( \(FS acc dial) r ->
-          let dial' = rotate r dial
-           in if unwrap dial' == 0
-                then FS (acc + 1) dial'
-                else FS acc dial'
-      )
-      (FS 0 initialDial)
+    . foldl countZero (FS 0 initialDial)
     . unwrapParser parseRotations
+  where
+    countZero :: FoldState -> Rotation -> FoldState
+    countZero (FS acc dial) r =
+      let dial' = rotate r dial
+       in if unwrap dial' == 0
+            then FS (acc + 1) dial'
+            else FS acc dial'
 
 solve2 :: String -> Int
-solve2 input =
-  let rotations = unwrapParser parseRotations input
-   in acc $
-        foldl
-          ( \(FS acc dial) r ->
-              let d = delta r
-                  step = if d > 0 then 1 else -1
-                  positions = take (abs d) $ tail $ iterate (\x -> x + fromIntegral step) dial
-                  hitsDuring = length $ filter ((== 0) . unwrap) positions
-                  dial' = dial + fromIntegral d
-               in FS (acc + hitsDuring) dial'
-          )
-          (FS 0 initialDial)
-          rotations
+solve2 =
+  acc
+    . foldl countFlowing (FS 0 initialDial)
+    . unwrapParser parseRotations
   where
-    delta :: Rotation -> Int
-    delta (R n) = n
-    delta (L n) = -n
+    countFlowing :: FoldState -> Rotation -> FoldState
+    countFlowing (FS acc dial) r =
+      let d = delta r
+          step = if d > 0 then 1 else -1
+          positions = take (abs d) $ tail $ iterate (\x -> x + fromIntegral step) dial
+          hitsDuring = length $ filter ((== 0) . unwrap) positions
+          dial' = dial + fromIntegral d
+       in FS (acc + hitsDuring) dial'
 
 --  Entry point
 main :: IO ()

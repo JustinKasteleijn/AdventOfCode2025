@@ -1,6 +1,6 @@
 module Benchmark where
 
-import Control.DeepSeq (deepseq, NFData(..))
+import Control.DeepSeq (deepseq, NF)
 import Data.Time.Clock
 
 timeIt :: (NFData a) => String -> a -> IO a

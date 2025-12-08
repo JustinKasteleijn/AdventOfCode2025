@@ -1,3 +1,5 @@
+{-# LANGUAGE BangPatterns #-}
+
 import Data.List (foldl', sortOn)
 import Parser
 import Utilities
@@ -27,19 +29,24 @@ solve1 ranges ingredients =
   where
     inAnyRange i = any (\(l, r) -> i >= l && i <= r)
 
+data FoldState = FS
+  { ranges :: ![Range]
+  }
+
 solve2 :: [Range] -> Int
 solve2 =
   sum
     . map count
-    . foldl' mergeOverlapping []
+    . ranges
+    . foldl' mergeOverlapping (FS [])
     . sortOn fst
   where
-    mergeOverlapping :: [Range] -> Range -> [Range]
-    mergeOverlapping [] r = [r]
-    mergeOverlapping acc@((l', r') : rest) (l, r)
-      | r < l' = (l, r) : acc
-      | l > r' = (l, r) : acc
-      | otherwise = (min l l', max r r') : rest
+    mergeOverlapping :: FoldState -> Range -> FoldState
+    mergeOverlapping (FS []) r = FS [r]
+    mergeOverlapping (FS acc@((l', r') : rest)) (l, r)
+      | r < l' = FS $ (l, r) : acc
+      | l > r' = FS $ (l, r) : acc
+      | otherwise = FS $ (min l l', max r r') : rest
 
     count :: Range -> Int
     count (l, r) = r - l + 1

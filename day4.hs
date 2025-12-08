@@ -28,19 +28,22 @@ mooreNeighborhood (x, y) =
       (dx, dy) /= (0, 0)
   ]
 
+data FoldState = FS
+  { paperRolls :: !Int,
+    graphAcc :: !Graph
+  }
+
 solve :: (Position -> Graph -> Graph) -> Graph -> Int -> (Int, Graph)
 solve update graph n =
-  S.foldl'
-    step
-    (0, graph)
-    graph
+  let final = S.foldl' step (FS 0 graph) graph
+   in (paperRolls final, graphAcc final)
   where
-    step :: (Int, Graph) -> Position -> (Int, Graph)
-    step (acc', graph') pos'
+    step :: FoldState -> Position -> FoldState
+    step (FS acc' graph') pos'
       | countNeighbors (mooreNeighborhood pos') 0 < n =
           let new = update pos' graph'
-           in (acc' + 1, new)
-      | otherwise = (acc', graph')
+           in FS (acc' + 1) new
+      | otherwise = FS acc' graph'
 
     countNeighbors :: [Position] -> Int -> Int
     countNeighbors [] acc = acc

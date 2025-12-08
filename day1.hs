@@ -47,32 +47,38 @@ parseRotations = lines1 parseRotation
 
 -- Solvers
 
+data FoldState = FS
+  { acc :: !Int,
+    dial :: !Dial
+  }
+
 solve1 :: String -> Int
-solve1 input =
-  let rotations = unwrapParser parseRotations input
-   in fst $
-        foldl
-          ( \(acc, dial) r ->
-              let dial' = rotate r dial
-               in (if unwrap dial' == 0 then acc + 1 else acc, dial')
-          )
-          (0, initialDial)
-          rotations
+solve1 =
+  acc
+    . foldl
+      ( \(FS acc dial) r ->
+          let dial' = rotate r dial
+           in if unwrap dial' == 0
+                then FS (acc + 1) dial'
+                else FS acc dial'
+      )
+      (FS 0 initialDial)
+    . unwrapParser parseRotations
 
 solve2 :: String -> Int
 solve2 input =
   let rotations = unwrapParser parseRotations input
-   in fst $
+   in acc $
         foldl
-          ( \(acc, dial) r ->
+          ( \(FS acc dial) r ->
               let d = delta r
                   step = if d > 0 then 1 else -1
                   positions = take (abs d) $ tail $ iterate (\x -> x + fromIntegral step) dial
                   hitsDuring = length $ filter ((== 0) . unwrap) positions
                   dial' = dial + fromIntegral d
-               in (acc + hitsDuring, dial')
+               in FS (acc + hitsDuring) dial'
           )
-          (0, initialDial)
+          (FS 0 initialDial)
           rotations
   where
     delta :: Rotation -> Int

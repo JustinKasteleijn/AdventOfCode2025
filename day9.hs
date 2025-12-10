@@ -21,9 +21,9 @@ area (V2 x y) (V2 x' y') =
 solve1 :: [V2 Int] -> Int
 solve1 coords =
   maximum
-    [ area v2 v2'
-      | (v2 : rest) <- tails coords,
-        v2' <- rest
+    [ area p1 p2
+      | (p1 : rest) <- tails coords,
+        p2 <- rest
     ]
 
 -- Credits to NerdyPepper for helping me come up with this solution!
@@ -42,15 +42,11 @@ intersects (V2 x y) (V2 x' y') = not . all away . pairs
 solve2 :: [V2 Int] -> Int
 solve2 coords =
   maximum $
-    [ area ci cj
-      | (i, ci) <- indexed,
-        (j, cj) <- indexed,
-        j > i,
-        not (intersects ci cj coords)
+    [ area p1 p2
+      | (p1 : rest) <- tails coords,
+        p2 <- rest,
+        not (intersects p1 p2 coords)
     ]
-  where
-    indexed :: [(Int, V2 Int)]
-    indexed = zip [0 ..] coords
 
 main :: IO ()
 main = do

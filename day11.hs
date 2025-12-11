@@ -1,7 +1,9 @@
 module Day11 (part1, part2) where
 
+import Benchmark
 import Control.Arrow (first, second)
-import Data.Map.Strict (Map)
+import Data.List (foldl')
+import Data.Map.Strict (Map (..))
 import Data.Map.Strict qualified as HM
 import Data.Maybe (fromMaybe)
 import Utilities
@@ -19,7 +21,7 @@ countPaths start end connections = fst $ go HM.empty start
           Just (Visited {numPaths}) -> (numPaths, visited)
           Nothing ->
             let (n, newVisited) =
-                  foldl
+                  foldl'
                     ( \(count, vis) next ->
                         let (pathsFromNext, vis') = go vis next
                          in (count + pathsFromNext, vis')
@@ -50,5 +52,8 @@ part2 s = (paths "svr" "dac" * paths "dac" "fft" * paths "fft" "out") + (paths "
 main :: IO ()
 main = do
   input <- readFile "Day11.txt"
-  print $ part1 input
-  print $ part2 input
+  res1 <- timeIt "Part 1" $ part1 input
+  print res1
+
+  res2 <- timeIt "Part 2" $ part2 input
+  print res2
